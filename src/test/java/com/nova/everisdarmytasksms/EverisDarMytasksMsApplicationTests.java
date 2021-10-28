@@ -5,7 +5,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,17 +52,9 @@ class EverisDarMytasksMsApplicationTests {
 	@Test
 	void createTaskFromServiceTest() {
 		//Description with 256 characters
-		Task task256Characters = taskService.createTask(Task.PENDING, "sssssssssssssssssssss"
-				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-				+ "sssssssssssssssssssssssssssssss");
+		Task task256Characters = build256CharactersTask();
 		//Description with 255 characters
-		Task task255Characters = taskService.createTask(Task.PENDING, "sssssssssssssssssssss"
-				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-				+ "ssssssssssssssssssssssssssssss");
+		Task task255Characters = build255CharactersTask();
 		
 		assertEquals(task256Characters, null);
 		assertNotEquals(task255Characters, null);
@@ -80,6 +74,26 @@ class EverisDarMytasksMsApplicationTests {
 		andExpect(jsonPath("$.[1].status").value(Task.PENDING));
 	} 
 	
+	@Test
+	void createTaskWithLessThan256Characters() throws Exception {
+		Task task = buildTask();
+		
+		this.mockMvc.perform(post("/createTask").
+		param("status", task.getStatus()).param("description", task.getDescription())).
+		andDo(print()).andExpect(status().isCreated()).
+		andExpect(content().string("Tarea creada correctamente"));
+	}
+	
+	@Test
+	void createTaskWith256Characters() throws Exception {		
+		this.mockMvc.perform(post("/createTask").
+		param("status", Task.PENDING).param("description", descriptionOf256Characters())).
+		andDo(print()).andExpect(status().isUnprocessableEntity()).
+		andExpect(content().string("La tarea debe tener una descripción "
+				+ "con una longitud máxima de 255 caracteres"));
+	}
+	
+	
 	private Task buildTask() {
 		return taskService.createTask(Task.PENDING, "Descripcion PENDING");
 //		Task taskPending = taskService.createTask(Task.PENDING, "Descripcion PENDING");
@@ -89,6 +103,26 @@ class EverisDarMytasksMsApplicationTests {
 //		taskRepository.save(taskPending);
 //		taskRepository.save(taskInProgress);
 //		taskRepository.save(taskFinished);
+	}
+	
+	private Task build255CharactersTask() {
+		return taskService.createTask(Task.PENDING, "sssssssssssssssssssss"
+				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+				+ "ssssssssssssssssssssssssssssss");
+	}
+	
+	private Task build256CharactersTask() {
+		return taskService.createTask(Task.PENDING, descriptionOf256Characters());
+	}
+	
+	private String descriptionOf256Characters() {
+		return "sssssssssssssssssssss"
+				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+				+ "ssssssssssssssssssssssssssssssss";
 	}
 
 }

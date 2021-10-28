@@ -79,7 +79,6 @@ class EverisDarMytasksMsApplicationTests {
 		andExpect(jsonPath("$.[0].status").value(Task.PENDING)).
 		andExpect(jsonPath("$.[1].status").value(Task.PENDING));
 	}
-
 	
 	
 	private Task buildTask() {

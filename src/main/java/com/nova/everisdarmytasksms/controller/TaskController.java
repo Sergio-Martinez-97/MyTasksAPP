@@ -55,15 +55,19 @@ public class TaskController {
 	
 	//Update the task's description and status
 	@PutMapping("/updateTask/{id}")
-	public ResponseEntity<Task> updateTasks(@PathVariable("id") Integer id, 
+	public ResponseEntity<Task> updateTask(@PathVariable("id") Integer id, 
 			@RequestBody Task task) {
 		Task existingTask = taskService.getTaskById(id);
-		existingTask.setDescription(task.getDescription());
-		existingTask.setStatus(task.getStatus());
-		taskRepository.save(existingTask);
-		
-		return new ResponseEntity<Task>(existingTask, 
-				HttpStatus.OK);
+		if (existingTask != null) {
+			existingTask.setDescription(task.getDescription());
+			existingTask.setStatus(task.getStatus());
+			taskRepository.save(existingTask);
+			
+			return new ResponseEntity<Task>(existingTask, 
+					HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Task>(HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	//Update the task's description
@@ -71,11 +75,15 @@ public class TaskController {
 	public ResponseEntity<Task> updateDescriptionTasks(@PathVariable("id") Integer id, 
 			@RequestParam("description") String description) {
 		Task existingTask = taskService.getTaskById(id);
-		existingTask.setDescription(description);
-		taskRepository.save(existingTask);
-		
-		return new ResponseEntity<Task>(existingTask, 
-				HttpStatus.OK);
+		if (existingTask != null) {
+			existingTask.setDescription(description);
+			taskRepository.save(existingTask);
+			
+			return new ResponseEntity<Task>(existingTask, 
+					HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Task>(HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	//Update the task's status
@@ -83,11 +91,15 @@ public class TaskController {
 	public ResponseEntity<Task> updateStatusTasks(@PathVariable("id") Integer id, 
 			@RequestParam("status") String status) {
 		Task existingTask = taskService.getTaskById(id);
-		existingTask.setStatus(status);
-		taskRepository.save(existingTask);
-		
-		return new ResponseEntity<Task>(existingTask, 
-				HttpStatus.OK);
+		if (existingTask != null) {
+			existingTask.setStatus(status);
+			taskRepository.save(existingTask);
+			
+			return new ResponseEntity<Task>(existingTask, 
+					HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Task>(HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	//Delete the task with the given id

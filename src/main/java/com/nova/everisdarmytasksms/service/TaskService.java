@@ -22,6 +22,6 @@ public class TaskService {
 	}
 
 	public Task getTaskById(Integer id) {
-		return taskRepository.findById(id).get();
+		return taskRepository.findById(id).orElse(null);
 	}
 }

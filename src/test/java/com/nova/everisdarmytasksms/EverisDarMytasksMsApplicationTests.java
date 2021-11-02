@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.After;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nova.everisdarmytasksms.controller.Task;
 import com.nova.everisdarmytasksms.controller.TaskController;
+import com.nova.everisdarmytasksms.model.Task;
 import com.nova.everisdarmytasksms.repository.TaskRepository;
 import com.nova.everisdarmytasksms.service.TaskService;
 

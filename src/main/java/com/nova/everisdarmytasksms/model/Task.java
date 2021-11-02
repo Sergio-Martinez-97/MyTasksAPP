@@ -1,4 +1,4 @@
-package com.nova.everisdarmytasksms.controller;
+package com.nova.everisdarmytasksms.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

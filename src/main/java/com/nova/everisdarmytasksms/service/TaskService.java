@@ -3,7 +3,7 @@ package com.nova.everisdarmytasksms.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nova.everisdarmytasksms.controller.Task;
+import com.nova.everisdarmytasksms.model.Task;
 import com.nova.everisdarmytasksms.repository.TaskRepository;
 
 @Service

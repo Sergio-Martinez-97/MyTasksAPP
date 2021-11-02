@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nova.everisdarmytasksms.model.Task;
 import com.nova.everisdarmytasksms.repository.TaskRepository;
 import com.nova.everisdarmytasksms.service.TaskService;
 
@@ -27,13 +28,13 @@ public class TaskController {
 	TaskService taskService;
 	
 	//Return all the tasks stored in DB
-	@GetMapping("/getTasks")
+	@GetMapping("/tasks")
 	public List<Task> getTasks() {
 		return taskRepository.findAll();
 	}
 	
 	//Create a new task if it's possible
-	@PostMapping("/createTask")
+	@PostMapping("/tasks")
 	public ResponseEntity<String> createTasks(@RequestParam("status") String status, 
 			@RequestParam("description") String description) {
 		Task task = taskService.createTask(status, description);
@@ -48,13 +49,13 @@ public class TaskController {
 	}
 	
 	//Get tasks by their current status
-	@GetMapping("/getTasks/{status}")
+	@GetMapping("/tasks/status/{status}")
 	public List<Task> getTasksByStatus(@PathVariable("status") String status) {
 		return taskRepository.findAllByStatus(status);
 	}
 	
 	//Update the task's description and status
-	@PutMapping("/updateTask/{id}")
+	@PutMapping("/tasks/{id}")
 	public ResponseEntity<Task> updateTask(@PathVariable("id") Integer id, 
 			@RequestBody Task task) {
 		Task existingTask = taskService.getTaskById(id);
@@ -71,7 +72,7 @@ public class TaskController {
 	}
 	
 	//Update the task's description
-	@PutMapping("/updateDescriptionTask/{id}")
+	@PutMapping("/tasks/description/{id}")
 	public ResponseEntity<Task> updateDescriptionTasks(@PathVariable("id") Integer id, 
 			@RequestParam("description") String description) {
 		Task existingTask = taskService.getTaskById(id);
@@ -87,7 +88,7 @@ public class TaskController {
 	}
 	
 	//Update the task's status
-	@PutMapping("/updateStatusTask/{id}")
+	@PutMapping("/tasks/status/{id}")
 	public ResponseEntity<Task> updateStatusTasks(@PathVariable("id") Integer id, 
 			@RequestParam("status") String status) {
 		Task existingTask = taskService.getTaskById(id);
@@ -103,7 +104,7 @@ public class TaskController {
 	}
 	
 	//Delete the task with the given id
-	@DeleteMapping("/deleteTask/{id}")
+	@DeleteMapping("/tasks/{id}")
 	public ResponseEntity<String> deleteTask(@PathVariable("id") Integer id) {
 		taskRepository.deleteById(id);
 		

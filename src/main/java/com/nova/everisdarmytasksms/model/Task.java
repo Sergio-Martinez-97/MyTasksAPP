@@ -2,6 +2,8 @@ package com.nova.everisdarmytasksms.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,20 +17,17 @@ public class Task {
     @Column(name="id")
 	private Integer id;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name="status")
-	private String status;
+	private Status status;
 	
 	//This description must have a maximum size of 256 characters.
 	@Column(name="description")
 	private String description;
 	
-	public static final String IN_PROGRESS = "In progress";
-	public static final String PENDING = "Pending";
-	public static final String FINISHED = "Finished";
-	
 	public Task() {}
 
-	public Task(String status, String description) {
+	public Task(Status status, String description) {
 		super();
 		this.status = status;
 		this.description = description;
@@ -42,11 +41,11 @@ public class Task {
 		this.id = id;
 	}
 
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 

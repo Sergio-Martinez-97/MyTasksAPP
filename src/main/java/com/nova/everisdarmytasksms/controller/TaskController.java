@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nova.everisdarmytasksms.model.Status;
 import com.nova.everisdarmytasksms.model.Task;
 import com.nova.everisdarmytasksms.repository.TaskRepository;
 import com.nova.everisdarmytasksms.service.TaskService;
@@ -39,7 +40,7 @@ public class TaskController {
 	
 	//Create a new task if it's possible
 	@PostMapping("/tasks")
-	public ResponseEntity<String> createTasks(@RequestParam("status") String status, 
+	public ResponseEntity<String> createTasks(@RequestParam("status") Status status, 
 			@RequestParam("description") String description) {
 		Task task = taskService.createTask(status, description);
 		if (task != null) {
@@ -56,7 +57,7 @@ public class TaskController {
 	
 	//Get tasks by their current status
 	@GetMapping("/tasks/status/{status}")
-	public List<Task> getTasksByStatus(@PathVariable("status") String status) {
+	public List<Task> getTasksByStatus(@PathVariable("status") Status status) {
 		return taskRepository.findAllByStatus(status);
 	}
 	
@@ -81,7 +82,7 @@ public class TaskController {
 	
 	//Update the task's description
 	@PutMapping("/tasks/description/{id}")
-	public ResponseEntity<Task> updateDescriptionTasks(@PathVariable("id") Integer id, 
+	public ResponseEntity<Task> updateDescriptionTask(@PathVariable("id") Integer id, 
 			@RequestParam("description") String description) {
 		Task existingTask = taskService.getTaskById(id);
 		if (existingTask != null) {
@@ -99,8 +100,8 @@ public class TaskController {
 	
 	//Update the task's status
 	@PutMapping("/tasks/status/{id}")
-	public ResponseEntity<Task> updateStatusTasks(@PathVariable("id") Integer id, 
-			@RequestParam("status") String status) {
+	public ResponseEntity<Task> updateStatusTask(@PathVariable("id") Integer id, 
+			@RequestParam("status") Status status) {
 		Task existingTask = taskService.getTaskById(id);
 		if (existingTask != null) {
 			logger.info("El status de la tarea con el id " + id + " ha sido actualizada");

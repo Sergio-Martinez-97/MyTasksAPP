@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nova.everisdarmytasksms.controller.TaskController;
 import com.nova.everisdarmytasksms.model.Task;
+import com.nova.everisdarmytasksms.model.Status;
 import com.nova.everisdarmytasksms.repository.TaskRepository;
 import com.nova.everisdarmytasksms.service.TaskService;
 
@@ -74,28 +75,28 @@ class EverisDarMytasksMsApplicationTests {
 		tasks.add(buildFinishedTask());
 		
 		when(taskRepository.findAll()).thenReturn(tasks);
-		this.mockMvc.perform(get("/getTasks")).
+		this.mockMvc.perform(get("/tasks")).
 		andDo(print()).andExpect(status().isOk()).
 		andExpect(jsonPath("$.length()",is(3))).
-		andExpect(jsonPath("$.[0].status").value(Task.PENDING)).
-		andExpect(jsonPath("$.[1].status").value(Task.IN_PROGRESS)).
-		andExpect(jsonPath("$.[2].status").value(Task.FINISHED));
+		andExpect(jsonPath("$.[0].status").value(Status.PENDING.toString())).
+		andExpect(jsonPath("$.[1].status").value(Status.IN_PROGRESS.toString())).
+		andExpect(jsonPath("$.[2].status").value(Status.FINISHED.toString()));
 	} 
 	
 	@Test
 	void createTaskWithLessThan256Characters() throws Exception {
 		Task task = buildPendingTask();
 		
-		this.mockMvc.perform(post("/createTask").
-		param("status", task.getStatus()).param("description", task.getDescription())).
+		this.mockMvc.perform(post("/tasks").
+		param("status", task.getStatus().toString()).param("description", task.getDescription())).
 		andDo(print()).andExpect(status().isCreated()).
 		andExpect(content().string("Tarea creada correctamente"));
 	}
 	
 	@Test
 	void createTaskWith256Characters() throws Exception {		
-		this.mockMvc.perform(post("/createTask").
-		param("status", Task.PENDING).param("description", descriptionOf256Characters())).
+		this.mockMvc.perform(post("/tasks").
+		param("status", Status.PENDING.toString()).param("description", descriptionOf256Characters())).
 		andDo(print()).andExpect(status().isUnprocessableEntity()).
 		andExpect(content().string("La tarea debe tener una descripción "
 				+ "con una longitud máxima de 255 caracteres"));
@@ -106,11 +107,11 @@ class EverisDarMytasksMsApplicationTests {
 		List<Task> tasks = new ArrayList<Task>();
 		tasks.add(buildPendingTask());
 		
-		when(taskRepository.findAllByStatus(Task.PENDING)).thenReturn(tasks);
-		this.mockMvc.perform(get("/getTasks/" + Task.PENDING)).
+		when(taskRepository.findAllByStatus(Status.PENDING)).thenReturn(tasks);
+		this.mockMvc.perform(get("/tasks/status/" + Status.PENDING)).
 		andDo(print()).andExpect(status().isOk()).
 		andExpect(jsonPath("$.length()",is(1))).
-		andExpect(jsonPath("$.[0].status").value(Task.PENDING));
+		andExpect(jsonPath("$.[0].status").value(Status.PENDING.toString()));
 	}
 	
 	@Test
@@ -118,11 +119,11 @@ class EverisDarMytasksMsApplicationTests {
 		List<Task> tasks = new ArrayList<Task>();
 		tasks.add(buildInProgressTask());
 		
-		when(taskRepository.findAllByStatus(Task.IN_PROGRESS)).thenReturn(tasks);
-		this.mockMvc.perform(get("/getTasks/" + Task.IN_PROGRESS)).
+		when(taskRepository.findAllByStatus(Status.IN_PROGRESS)).thenReturn(tasks);
+		this.mockMvc.perform(get("/tasks/status/" + Status.IN_PROGRESS)).
 		andDo(print()).andExpect(status().isOk()).
 		andExpect(jsonPath("$.length()",is(1))).
-		andExpect(jsonPath("$.[0].status").value(Task.IN_PROGRESS));
+		andExpect(jsonPath("$.[0].status").value(Status.IN_PROGRESS.toString()));
 	}
 	
 	@Test
@@ -130,11 +131,11 @@ class EverisDarMytasksMsApplicationTests {
 		List<Task> tasks = new ArrayList<Task>();
 		tasks.add(buildFinishedTask());
 		
-		when(taskRepository.findAllByStatus(Task.FINISHED)).thenReturn(tasks);
-		this.mockMvc.perform(get("/getTasks/" + Task.FINISHED)).
+		when(taskRepository.findAllByStatus(Status.FINISHED)).thenReturn(tasks);
+		this.mockMvc.perform(get("/tasks/status/" + Status.FINISHED)).
 		andDo(print()).andExpect(status().isOk()).
 		andExpect(jsonPath("$.length()",is(1))).
-		andExpect(jsonPath("$.[0].status").value(Task.FINISHED));
+		andExpect(jsonPath("$.[0].status").value(Status.FINISHED.toString()));
 	}
 	
 	@Test
@@ -148,32 +149,62 @@ class EverisDarMytasksMsApplicationTests {
 		String jsonString = map.writeValueAsString(updatedTask);
 		
 		Mockito.when(taskRepository.findById(1)).thenReturn(optional);
-		this.mockMvc.perform(put("/updateTask/1").contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(put("/tasks/1").contentType(MediaType.APPLICATION_JSON)
 				.content(jsonString)).
 		andDo(print()).andExpect(status().isOk()).
 		andExpect(content().json("{\"id\": 1,\"status\":\"" + updatedTask.getStatus() + "\"," + 
 				"\"description\":\"" + updatedTask.getDescription() + "\"}"));
 	}
+
+	@Test
+	void updateDescriptionTaskTest() throws Exception {
+		Task task = buildPendingTask();
+		task.setId(1);
+		Optional<Task> optional = Optional.of(task);
+		
+		task.setDescription("Descripcion actualizada");;
+		
+		Mockito.when(taskRepository.findById(1)).thenReturn(optional);
+		this.mockMvc.perform(put("/tasks/description/1").param("description", task.getDescription())).
+		andDo(print()).andExpect(status().isOk()).
+		andExpect(content().json("{\"id\": 1,\"status\":\"" + task.getStatus() + "\"," + 
+				"\"description\":\"" + task.getDescription() + "\"}"));
+	}
+	
+	@Test
+	void updateStatusTaskTest() throws Exception {
+		Task task = buildPendingTask();
+		task.setId(1);
+		Optional<Task> optional = Optional.of(task);
+		
+		task.setStatus(Status.FINISHED);
+		
+		Mockito.when(taskRepository.findById(1)).thenReturn(optional);
+		this.mockMvc.perform(put("/tasks/status/1").param("status", task.getStatus().toString())).
+		andDo(print()).andExpect(status().isOk()).
+		andExpect(content().json("{\"id\": 1,\"status\":\"" + task.getStatus() + "\"," + 
+				"\"description\":\"" + task.getDescription() + "\"}"));
+	}
 	
 	
 	private Task buildUpdatedTask() {
-		return taskService.createTask(Task.FINISHED, "Descripcion actualizada");
+		return taskService.createTask(Status.FINISHED, "Descripcion actualizada");
 	}
 
 	private Task buildPendingTask() {
-		return taskService.createTask(Task.PENDING, "Descripcion PENDING");
+		return taskService.createTask(Status.PENDING, "Descripcion PENDING");
 	}
 	
 	private Task buildInProgressTask() {
-		return taskService.createTask(Task.IN_PROGRESS, "Descripcion IN PROGRESS");
+		return taskService.createTask(Status.IN_PROGRESS, "Descripcion IN PROGRESS");
 	}
 	
 	private Task buildFinishedTask() {
-		return taskService.createTask(Task.FINISHED, "Descripcion FINISHED");
+		return taskService.createTask(Status.FINISHED, "Descripcion FINISHED");
 	}
 	
 	private Task build255CharactersTask() {
-		return taskService.createTask(Task.PENDING, "sssssssssssssssssssss"
+		return taskService.createTask(Status.PENDING, "sssssssssssssssssssss"
 				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
 				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
 				+ "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
@@ -181,7 +212,7 @@ class EverisDarMytasksMsApplicationTests {
 	}
 	
 	private Task build256CharactersTask() {
-		return taskService.createTask(Task.PENDING, descriptionOf256Characters());
+		return taskService.createTask(Status.PENDING, descriptionOf256Characters());
 	}
 	
 	private String descriptionOf256Characters() {

@@ -3,6 +3,7 @@ package com.nova.everisdarmytasksms.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nova.everisdarmytasksms.model.Status;
 import com.nova.everisdarmytasksms.model.Task;
 import com.nova.everisdarmytasksms.repository.TaskRepository;
 
@@ -12,7 +13,7 @@ public class TaskService {
 	@Autowired
 	TaskRepository taskRepository;
 	
-	public Task createTask(String status, String description) {
+	public Task createTask(Status status, String description) {
 		if(description.length() < 256) {
 			Task task = new Task(status, description);
 			return task;

@@ -1,0 +1,8 @@
+version: '3'
+services:
+  everis-dar-mytasks-ms:
+    container_name: MyTasks
+    image: "mytasks"
+    build: .
+    ports:
+      - "8080:8080"

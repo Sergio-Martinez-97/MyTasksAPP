@@ -2,7 +2,7 @@ package com.nova.everisdarmytasksms;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,7 +63,7 @@ class EverisDarMytasksMsApplicationTests {
 		Task task255Characters = build255CharactersTask();
 		
 		assertEquals(task256Characters, null);
-		assertNotEquals(task255Characters, null);
+		assertNotNull(task255Characters);
 	}
 	
 	@Test

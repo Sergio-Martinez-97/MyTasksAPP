@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nova.everisdarmytasksms.model.Status;
@@ -21,7 +23,12 @@ import com.nova.everisdarmytasksms.model.Task;
 import com.nova.everisdarmytasksms.repository.TaskRepository;
 import com.nova.everisdarmytasksms.service.TaskService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
+@CrossOrigin(origins = "*")
 public class TaskController {
 
 	@Autowired
@@ -32,13 +39,21 @@ public class TaskController {
 	
 	private static final Logger logger =  LoggerFactory.getLogger(TaskController.class);
 	
-	//Return all the tasks stored in DB
+	@Operation(summary = "Get all tasks")
+	@ApiResponses(value = { 
+	  @ApiResponse(responseCode = "200", description = "Tasks found") 
+	})
 	@GetMapping("/tasks")
 	public List<Task> getTasks() {
 		return taskRepository.findAll();
 	}
 	
-	//Create a new task if it's possible
+	@Operation(summary = "Create a task")
+	@ApiResponses(value = { 
+	  @ApiResponse(responseCode = "201", description = "Task created"),
+	  @ApiResponse(responseCode = "422", description = "Task couldn't be created. It must contain a "
+	  		+ "maximun of 255 characters")
+	})
 	@PostMapping("/tasks")
 	public ResponseEntity<String> createTasks(@RequestParam("status") Status status, 
 			@RequestParam("description") String description) {
@@ -55,13 +70,20 @@ public class TaskController {
 		}
 	}
 	
-	//Get tasks by their current status
+	@Operation(summary = "Get task by its status")
+	@ApiResponses(value = { 
+	  @ApiResponse(responseCode = "200", description = "Tasks found")
+	})
 	@GetMapping("/tasks/status/{status}")
 	public List<Task> getTasksByStatus(@PathVariable("status") Status status) {
 		return taskRepository.findAllByStatus(status);
 	}
 	
-	//Update the task's description and status
+	@Operation(summary = "Update an entire task")
+	@ApiResponses(value = { 
+	  @ApiResponse(responseCode = "200", description = "Task updated"),
+	  @ApiResponse(responseCode = "400", description = "The task with the given id doesn't exists")
+	})
 	@PutMapping("/tasks/{id}")
 	public ResponseEntity<Task> updateTask(@PathVariable("id") Integer id, 
 			@RequestBody Task task) {
@@ -80,7 +102,11 @@ public class TaskController {
 		}
 	}
 	
-	//Update the task's description
+	@Operation(summary = "Update the decription of one task")
+	@ApiResponses(value = { 
+	  @ApiResponse(responseCode = "200", description = "Task updated"),
+	  @ApiResponse(responseCode = "400", description = "The task with the given id doesn't exists")
+	})
 	@PutMapping("/tasks/description/{id}")
 	public ResponseEntity<Task> updateDescriptionTask(@PathVariable("id") Integer id, 
 			@RequestParam("description") String description) {
@@ -98,7 +124,11 @@ public class TaskController {
 		}
 	}
 	
-	//Update the task's status
+	@Operation(summary = "Update the status of one task")
+	@ApiResponses(value = { 
+	  @ApiResponse(responseCode = "200", description = "Task updated"),
+	  @ApiResponse(responseCode = "400", description = "The task with the given id doesn't exists")
+	})
 	@PutMapping("/tasks/status/{id}")
 	public ResponseEntity<Task> updateStatusTask(@PathVariable("id") Integer id, 
 			@RequestParam("status") Status status) {
@@ -116,7 +146,11 @@ public class TaskController {
 		}
 	}
 	
-	//Delete the task with the given id
+	@Operation(summary = "Delete one task")
+	@ApiResponses(value = { 
+	  @ApiResponse(responseCode = "200", description = "Task deleted"),
+	  @ApiResponse(responseCode = "400", description = "The task with the given id doesn't exists")
+	})
 	@DeleteMapping("/tasks/{id}")
 	public ResponseEntity<String> deleteTask(@PathVariable("id") Integer id) {
 		if (taskRepository.existsById(id)) {

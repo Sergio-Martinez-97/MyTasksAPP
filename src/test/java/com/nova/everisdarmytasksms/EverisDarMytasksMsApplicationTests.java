@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.After;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import com.nova.everisdarmytasksms.service.TaskService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Disabled
 class EverisDarMytasksMsApplicationTests {
 
 	@MockBean

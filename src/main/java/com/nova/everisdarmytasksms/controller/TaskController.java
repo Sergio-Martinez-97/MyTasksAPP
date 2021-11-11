@@ -47,6 +47,15 @@ public class TaskController {
 	public List<Task> getTasks() {
 		return taskRepository.findAll();
 	}
+
+	@Operation(summary = "Get task by id")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Task found")
+	})
+	@GetMapping("/tasks/{id}")
+	public Task getTask(@PathVariable("id") Integer id) {
+		return taskService.getTaskById(id);
+	}
 	
 	@Operation(summary = "Create a task")
 	@ApiResponses(value = { 

@@ -74,5 +74,11 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	
+	<distributionManagement> 
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>http://nexusrepo-sonatype-nexus-service-cicd.apps.c1-ocp.apps.ees-dev-az.cnp.com/repository/maven-snapshots</url>
+		</snapshotRepository> 
+	</distributionManagement>
 </project>

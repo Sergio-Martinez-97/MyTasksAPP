@@ -13,7 +13,7 @@
 	<mirrors>
 		<mirror>
 			<id>nexus</id>
-			<url>http://nexusrepo-sonatype-nexus-service-cicd.apps.c1-ocp.apps.ees-dev-az.cnp.com/repository/maven-snapshots/</url>
+			<url>http://nexusrepo-sonatype-nexus-service-cicd.apps.c1-ocp.apps.ees-dev-az.cnp.com/repository/maven-public/</url>
 			<mirrorOf>*</mirrorOf>
 		</mirror>
 	</mirrors>

@@ -95,12 +95,5 @@
 			<id>nexus</id>
 			<url>http://nexusrepo-sonatype-nexus-service-cicd.apps.c1-ocp.apps.ees-dev-az.cnp.com/repository/maven-snapshots</url>
 		</snapshotRepository>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>pipelineTekton</id>
-			<name>Repositorio Pipelines</name>
-			<url>http://nexusrepo-sonatype-nexus-service-cicd.apps.c1-ocp.apps.ees-dev-az.cnp.com</url>
-			<layout>default</layout>
-		</repository>
 	</distributionManagement>
 </project>

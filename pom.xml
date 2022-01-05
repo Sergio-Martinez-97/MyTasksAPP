@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.nova</groupId>
 	<artifactId>everis-dar-mytasks-ms</artifactId>
-	<version>0.35.0-SNAPSHOT</version>
+	<version>0.36.0-SNAPSHOT</version>
 	<name>everis-dar-mytasks-ms</name>
 	<description>My tasks app from NOVA Academy</description>
 	<properties>
